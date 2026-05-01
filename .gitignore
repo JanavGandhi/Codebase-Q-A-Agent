@@ -1,7 +1,6 @@
-# .gitignore  ← protect secrets and junk
 .env
 .venv/
 __pycache__/
 *.pyc
-chroma_db/        # ChromaDB will create this folder — don't commit it
-repos/            # Where we'll clone the requests library
+chroma_db/
+repos/
