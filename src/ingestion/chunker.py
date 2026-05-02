@@ -16,6 +16,8 @@ class CodeChunk:
 
 MAX_CHUNK_LINES = 80   # classes larger than this get skipped — their methods are captured individually
 
+SKIP_DIRS = {".venv", "chroma_db", "repos", "__pycache__", ".git", "node_modules"}
+
 
 def _extract_from_file(filepath: Path, repo_root: Path) -> list[CodeChunk]:
     """Parse one .py file and return a list of CodeChunks."""
@@ -56,16 +58,18 @@ def _extract_from_file(filepath: Path, repo_root: Path) -> list[CodeChunk]:
 
 def chunk_repository(repo_path: str) -> list[CodeChunk]:
     """Walk an entire repo directory and extract all code chunks."""
-    repo_root = Path(repo_path)
+    repo_root  = Path(repo_path)
     all_chunks: list[CodeChunk] = []
 
     py_files = list(repo_root.rglob("*.py"))
     print(f"  Found {len(py_files)} Python files")
 
     for filepath in py_files:
-        # Skip test files and cache directories for cleaner results
-        parts = filepath.parts
-        if any(p.startswith(("test_", "_")) or p == "__pycache__" for p in parts):
+        # Skip unwanted directories
+        if any(part in SKIP_DIRS for part in filepath.parts):
+            continue
+        # Skip test files
+        if filepath.name.startswith("test_"):
             continue
         all_chunks.extend(_extract_from_file(filepath, repo_root))
 
