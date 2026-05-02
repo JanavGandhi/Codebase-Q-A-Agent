@@ -10,3 +10,5 @@ chromadb==0.5.3
 # Utilities
 python-dotenv==1.0.1
 rich==13.7.1
+
+flask==3.0.3
